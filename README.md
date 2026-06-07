@@ -6,7 +6,7 @@ Upload a batch of PDFs (one RA + noise documents) → the pipeline identifies th
 
 [![Python](https://img.shields.io/badge/Python-3.10+-blue?style=flat-square&logo=python)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
-[![Tests](https://img.shields.io/badge/Tests-20%2F20%20passing-brightgreen?style=flat-square)](./unfi_pipeline/tests/test_pipeline.py)
+[![Tests](https://img.shields.io/badge/Tests-20%2F20%20passing-brightgreen?style=flat-square)](./tests/test_pipeline.py)
 
 ---
 
@@ -78,7 +78,6 @@ PDF Batch (RA + noise docs)
 ### Installation
 
 ```bash
-cd unfi_pipeline
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
@@ -87,7 +86,6 @@ pip install -r requirements.txt
 ### Run
 
 ```bash
-cd unfi_pipeline
 source venv/bin/activate
 python -m uvicorn src.main:app --reload --port 8000
 ```
@@ -97,7 +95,6 @@ API docs: `http://localhost:8000/docs`
 ### Test
 
 ```bash
-cd unfi_pipeline
 source venv/bin/activate
 pytest tests/test_pipeline.py -v
 ```
@@ -328,28 +325,25 @@ curl -X POST "http://localhost:8000/classify" \
 
 ```
 .
-├── unfi_pipeline/
-│   ├── src/
-│   │   ├── main.py                    # FastAPI app + /classify endpoint
-│   │   ├── models.py                  # Pydantic request/response schemas
-│   │   ├── document_identifier.py     # Hard filter logic (RA identification)
-│   │   ├── extractor.py               # Line item extraction (strategy chain)
-│   │   ├── classifier.py              # 7-family rule engine
-│   │   ├── postprocess.py             # Data cleaning (TOTAL row filter)
-│   │   └── reporter.py                # Summary generation
-│   ├── tests/
-│   │   └── test_pipeline.py           # Full test suite (20 scenarios)
-│   ├── data/
-│   │   └── UNFI deduction pattern reference.csv   # Design-time only
-│   └── requirements.txt
+├── src/
+│   ├── main.py                    # FastAPI app + /classify endpoint
+│   ├── models.py                  # Pydantic request/response schemas
+│   ├── document_identifier.py     # Hard filter logic (RA identification)
+│   ├── extractor.py               # Line item extraction (strategy chain)
+│   ├── classifier.py              # 7-family rule engine
+│   ├── postprocess.py             # Data cleaning (TOTAL row filter)
+│   └── reporter.py                # Summary generation
+├── tests/
+│   └── test_pipeline.py           # Full test suite (20 scenarios)
 ├── files/
-│   ├── remittance advice/             # 3 RA PDF variants
-│   ├── noise/                         # 6 unrelated noise documents
+│   ├── remittance advice/         # 3 RA PDF variants
+│   ├── noise/                     # 6 unrelated noise documents
 │   └── UNFI deduction pattern reference.csv
-├── classification_explanation.md      # Deep-dive on classification basis
-├── PLAN.md                            # Implementation plan
-├── assignment.md                      # Original requirements
-└── README.md                          # This file
+├── requirements.txt
+├── classification_explanation.md  # Deep-dive on classification basis
+├── PLAN.md                        # Implementation plan
+├── assignment.md                  # Original requirements
+└── README.md                      # This file
 ```
 
 ---
@@ -374,7 +368,6 @@ curl -X POST "http://localhost:8000/classify" \
 Run:
 
 ```bash
-cd unfi_pipeline
 pytest tests/test_pipeline.py -v
 ```
 

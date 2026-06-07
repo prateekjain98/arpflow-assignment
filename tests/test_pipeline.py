@@ -25,7 +25,7 @@ def _load_file(path: pathlib.Path) -> bytes:
         return f.read()
 
 
-_FILES_DIR = pathlib.Path(__file__).parent.parent.parent / "files"
+_FILES_DIR = pathlib.Path(__file__).parent.parent / "files"
 RA_MAIN = _FILES_DIR / "remittance advice" / "256199_01222025_WESTACH.pdf"
 RA_SMALL = _FILES_DIR / "remittance advice" / "256199_01222025_WESTACH (1).pdf"
 RA_VARIANT = _FILES_DIR / "remittance advice" / "256199_01222025_WESTACH (2).pdf"

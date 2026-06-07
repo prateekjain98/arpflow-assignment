@@ -354,21 +354,25 @@ No ML. No LLM. Rule-based classification encoded from reference analysis.
 ## Project Structure
 
 ```
-unfi_pipeline/
+.
 ├── src/
-│   ├── __init__.py
 │   ├── main.py                    # FastAPI app + /classify endpoint
 │   ├── models.py                  # Pydantic request/response models
 │   ├── document_identifier.py     # Hard filter logic (conditions 1-6)
 │   ├── extractor.py               # Line item extraction + 3 strategies
-│   ├── postprocess.py             # Orphan recovery, date detection, TOTAL filter
+│   ├── postprocess.py             # Date detection, fused-cell recovery, TOTAL filter
 │   ├── classifier.py              # 7-family rule engine (hardcoded from CSV analysis)
 │   └── reporter.py                # Summary generation
 ├── tests/
 │   └── test_pipeline.py           # All 20 test scenarios
-├── data/
-│   └── UNFI deduction pattern reference.csv    # Design-time only, NOT loaded at runtime
+├── files/
+│   ├── remittance advice/         # 3 RA PDF variants
+│   ├── noise/                     # 6 unrelated noise documents
+│   └── UNFI deduction pattern reference.csv
 ├── requirements.txt
+├── classification_explanation.md  # Deep-dive on classification basis
+├── PLAN.md                        # Implementation plan
+├── assignment.md                  # Original requirements
 └── README.md
 ```
 
