@@ -214,13 +214,17 @@ Given an invoice number, the system:
 
 ### Example Trace: `FSRHARFY25Q4058031Y`
 
+**Important context:** The reference CSV documents `FSRHRT` for Harris Teeter Fairshare, but the actual RA data contains `FSRHAR`. `HAR` does not appear in the reference for Fairshare. Two plausible interpretations exist: (a) HAR might be an abbreviation of `HARVES` (Row 35, 3rd Party Billing, customer="Harvest Health Foods"), or (b) HAR might be a variant of `HRT` (Row 185, Fairshare, customer="Harris Teeter"). Because these are hypotheses without direct evidence, the classifier does **not** infer a customer name.
+
 ```
 Step 1: Extract alphabetic prefix → "FSRHARFY"
-Step 2: Strip "FY" suffix (not in reference) → "FSRHAR"
+Step 2: Strip "FY" suffix → "FSRHAR"
 Step 3: Match "FSRHAR" against known FSR customer codes
-        "HAR" is an exact key in FSR_CUSTOMERS → maps to "Harris Teeter"
-Step 4: Return: category="Fairshare", customer="Harris Teeter", confidence="HIGH"
+        "HAR" is not a documented code → no customer match
+Step 4: Return: category="Fairshare", customer=null, confidence="HIGH"
 ```
+
+The category is certain because `FSR*` is a documented Fairshare prefix family. The customer name is omitted because `HAR` is not directly documented in the reference CSV.
 
 ### Example Trace: `WFMAUG2558031ISEWBB`
 
@@ -246,6 +250,6 @@ Step 7: Return: category="Fairshare", subcategory="In-Store Execution Whole Body
 | **Number of families** | 7 prefix families covering all 42 invoices |
 | **Number of categories** | 6 major groups (from 55 granular CSV categories) |
 | **Multi-pattern handling** | 11 cells split into separate rules, all pointing to same category |
-| **Abbreviation inference** | 3 FSR prefixes (HAG, HAR, NSG) encoded as exact mappings at design time. |
+| **Undocumented codes** | 3 FSR prefixes (HAG, HAR, NSG) appear in the actual RA data but are not in the reference CSV. They are classified as Fairshare (correct category) with `customer=null` — no customer name is inferred. |
 | **Confidence** | 42/42 invoices classified as HIGH |
 | **CSV role** | Design-time analysis only — rules hardcoded, CSV not read at runtime |

@@ -120,7 +120,15 @@ WFMAUG2558031ISEWBB
 
 **Confidence:** All 42 invoices in the test data classify as `HIGH` because every prefix is an exact match against a known family. Unknown prefixes return `UNCLASSIFIED` / `NONE`.
 
-**No fuzzy logic is used.** No Levenshtein distance, no regex similarity, no string distance computations. During design-time analysis, some mappings (e.g., `HAR` → Harris Teeter) were inferred from abbreviation patterns in the reference CSV. These inferences were validated and then **hardcoded as exact rules**. The production system never performs inference at runtime.
+The classifier uses **deterministic prefix matching** against the reference CSV. Every category and customer mapping is a direct lookup — if a code is not explicitly documented, the classifier returns `customer=null` rather than guessing.
+
+Three customer codes (`HAG`, `HAR`, `NSG`) appear in the actual RA data but are not in the reference for Fairshare:
+
+- **`HAG`** — Might be an abbreviation of `HAGGEN` (Row 33, 3rd Party Billing, customer="Haggen"). No `FSRHAG` pattern exists in the reference.
+- **`HAR`** — Might be an abbreviation of `HARVES` (Row 35, 3rd Party Billing, customer="Harvest Health Foods") or a variant of `HRT` (Row 185, Fairshare, customer="Harris Teeter"). No `FSRHAR` pattern exists in the reference.
+- **`NSG`** — Does not appear anywhere in the reference CSV.
+
+These codes are classified as `Fairshare` (the prefix family is documented) with `customer=null`.
 
 ---
 

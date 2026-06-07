@@ -8,14 +8,52 @@ from .models import ClassificationResult
 
 
 # === FAMILY 1: FSR* -> Fairshare ===========================================
+#
+# SOURCE: UNFI deduction pattern reference.csv (468 rows)
+#
+# Documented Fairshare customer codes extracted from the reference CSV:
+#   FGE     -> Giant Eagle        (FSRFGE...)
+#   AHOLD   -> Stop & Shop        (FSRAHOLD...)
+#   DLHZE   -> Delhaize           (FSRDLHZE...)
+#   FLN     -> Food Lion          (FSRFLN...)
+#   HAN     -> Hannaford          (FSRHAN...)
+#   HRT     -> Harris Teeter      (FSRHRT...)
+#   KG      -> Kroger             (FSRKG..., KGFSR...)
+#   PBG     -> Publix             (FSRPBG...)
+#   SCHNK   -> Schnuck's          (FSRSCHNK...)
+#   SPR     -> Sprouts            (FSRSPR...)
+#   TFM     -> Fresh Market       (FSRTFM..., FSRTFMGROC..., FSRTFMVMS...)
+#   WEIS    -> Weis               (FSRWEIS...)
+#   WGM     -> Wegman's           (FSRWGM...)
+#
+# CODES FROM ACTUAL RA DATA THAT ARE NOT IN THE REFERENCE CSV:
+#   HAR  -- substring search of all 468 rows: 0 exact cell matches.
+#           Two plausible interpretations from the reference:
+#           (a) HAR might be an abbreviation of HARVES (Row 35, 3rd Party
+#               Billing, customer="Harvest Health Foods") -- HAR = first 3
+#               letters of HARVES.
+#           (b) HAR might be a variant of HRT (Row 185, Fairshare,
+#               customer="Harris Teeter") -- 2/3 characters match.
+#           No FSRHAR pattern exists in the reference.
+#   HAG  -- substring search of all 468 rows: 0 exact cell matches.
+#           Plausible interpretation: HAG might be an abbreviation of
+#           HAGGEN (Row 33, 3rd Party Billing, customer="Haggen") --
+#           HAG = first 3 letters of HAGGEN.
+#           No FSRHAG pattern exists in the reference.
+#   NSG  -- substring search of all 468 rows: 0 matches of any kind.
+#           Does not appear anywhere in the reference CSV.
+#           (Note: NCG appears in Row 234 as 3rd Party Billing with
+#           customer="NCG", but NSG is completely absent.)
+#
+# Because these are plausible hypotheses without direct evidence in the
+# Fairshare section of the reference, the classifier returns the correct
+# category (Fairshare) with customer=None rather than guessing.
+# ===========================================================================
 FSR_CUSTOMERS = {
     "SPR": "Sprouts",
     "KG": "Kroger",
     "HRT": "Harris Teeter",
-    "HAR": "Harris Teeter",
     "HAN": "Hannaford",
-    "HAG": "Haggen",
-    "NSG": "Natural Grocers",
     "FGE": "Giant Eagle",
     "AHOLD": "Stop & Shop",
     "DLHZE": "Delhaize",

@@ -130,10 +130,7 @@ FSR_CUSTOMERS = {
     "SPR":  "Sprouts",
     "KG":   "Kroger",        # Also appears as KGFSR
     "HRT":  "Harris Teeter",
-    "HAR":  "Harris Teeter",  # Data uses HAR abbreviation
     "HAN":  "Hannaford",
-    "HAG":  "Haggen",        # Inferred from 3rd Party Billing entry
-    "NSG":  "Natural Grocers", # Inferred from 3rd Party Billing entry
     "FGE":  "Giant Eagle",
     "AHOLD": "Stop & Shop",
     "DLHZE": "Delhaize",
@@ -148,9 +145,16 @@ FSR_CUSTOMERS = {
 # Classification logic:
 # 1. Extract prefix after "FSR" (before digits or "FY")
 # 2. Strip "FY" suffix if present (FSRHAGFY25Q4 → FSRHAG)
-# 3. Look up customer code in FSR_CUSTOMERS
-# 4. Return: category="Fairshare", customer=lookup_result or "Unknown"
+# 3. Look up customer code in FSR_CUSTOMERS (documented codes only)
+# 4. Return: category="Fairshare", customer=lookup_result or null
 ```
+
+**Undocumented codes from actual RA data:** The PDFs contain `FSRHAR`, `FSRHAG`, and `FSRNSG` — none of which appear in the reference CSV for Fairshare:
+- `HAR` — Might be `HARVES` (Row 35, 3rd Party Billing, "Harvest Health Foods") or a variant of `HRT` (Row 185, Fairshare, "Harris Teeter").
+- `HAG` — Might be `HAGGEN` (Row 33, 3rd Party Billing, "Haggen").
+- `NSG` — Does not appear anywhere in the reference CSV.
+
+Because these are hypotheses without direct evidence in the Fairshare section, the classifier returns `category="Fairshare"` with `customer=null`.
 
 #### Family 2: WFM* → Fairshare (12 patterns, all Whole Foods)
 
