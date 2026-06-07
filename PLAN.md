@@ -103,13 +103,11 @@ if len(valid_ras) > 1:
 
 **Post-processing fixes (applied to all strategies):**
 
-1. **Orphan line recovery:** When `invoice_number` is empty, check next raw text line. If it matches `^[A-Z]{2,}[0-9].*$`, merge into previous row.
+1. **Date format detection:** Collect all raw date strings. If any has day > 12 → document uses DD/MM/YY. Parse all dates consistently. Normalize to ISO.
 
-2. **Date format detection:** Collect all raw date strings. If any has day > 12 → document uses DD/MM/YY. Parse all dates consistently. Normalize to ISO.
+2. **Fused-cell split:** Regex `^(\d{1,2}/\d{1,2}/\d{2,4})\s+([A-Z0-9].*)$` splits merged first column.
 
-3. **Fused-cell split:** Regex `^(\d{1,2}/\d{1,2}/\d{2,4})\s+([A-Z0-9].*)$` splits merged first column.
-
-4. **TOTAL PAID filter:** Skip row where `invoice_number` contains "TOTAL". Store amount for validation. Assert `sum(line_items.net_amount) == TOTAL_PAID`.
+3. **TOTAL PAID filter:** Skip row where `invoice_number` contains "TOTAL". Store amount for downstream reporting.
 
 ---
 
@@ -131,7 +129,8 @@ All invoices starting with `FSR` are Fairshare deductions. The next 2-6 letters 
 FSR_CUSTOMERS = {
     "SPR":  "Sprouts",
     "KG":   "Kroger",        # Also appears as KGFSR
-    "HRT":  "Harris Teeter",  # Data uses HAR abbreviation
+    "HRT":  "Harris Teeter",
+    "HAR":  "Harris Teeter",  # Data uses HAR abbreviation
     "HAN":  "Hannaford",
     "HAG":  "Haggen",        # Inferred from 3rd Party Billing entry
     "NSG":  "Natural Grocers", # Inferred from 3rd Party Billing entry
@@ -264,6 +263,9 @@ def classify(invoice_number: str) -> ClassificationResult:
         return ClassificationResult(category="Food Show", region="West", confidence="HIGH")
     
     # === FAMILY 4: ERDC/WRDC → Advertising Quarterly ===
+    # Exception: WRDCE (with trailing E) is Monthly, not Quarterly.
+    if inv.startswith("WRDCE"):
+        return ClassificationResult(category="Advertising - Monthly", region="West", confidence="HIGH")
     if inv.startswith("ERDC"):
         return ClassificationResult(category="Advertising - Quarterly", region="East", confidence="HIGH")
     if inv.startswith("WRDC"):
@@ -313,7 +315,7 @@ def classify(invoice_number: str) -> ClassificationResult:
 | `python-multipart` | File upload handling |
 | `pymupdf` | PDF text extraction |
 | `pdfplumber` | PDF table extraction |
-| `pandas` | Data manipulation |
+| `pandas` | Design-time CSV analysis only (not in requirements.txt) |
 | `pytest` | Testing |
 | `httpx` | API test client |
 
@@ -359,11 +361,7 @@ unfi_pipeline/
 │   ├── classifier.py              # 7-family rule engine (hardcoded from CSV analysis)
 │   └── reporter.py                # Summary generation
 ├── tests/
-│   ├── test_happy_path.py         # Test 1
-│   ├── test_multiple_ras.py       # Test 2
-│   ├── test_corrupted_ra.py       # Test 3
-│   ├── test_all_noise.py          # Test 4
-│   └── test_all_variants.py       # Test 5
+│   └── test_pipeline.py           # All 20 test scenarios
 ├── data/
 │   └── UNFI deduction pattern reference.csv    # Design-time only, NOT loaded at runtime
 ├── requirements.txt

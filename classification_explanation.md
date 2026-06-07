@@ -218,10 +218,8 @@ Given an invoice number, the system:
 Step 1: Extract alphabetic prefix → "FSRHARFY"
 Step 2: Strip "FY" suffix (not in reference) → "FSRHAR"
 Step 3: Match "FSRHAR" against known FSR customer codes
-        HAR does not match any exact code in FSR_CUSTOMERS
-Step 4: Fuzzy match: HAR → HRT (Harris Teeter)
-        (HAR and HRT share 2/3 characters; both start with H and have R)
-Step 5: Return: category="Fairshare", customer="Harris Teeter", confidence="HIGH"
+        "HAR" is an exact key in FSR_CUSTOMERS → maps to "Harris Teeter"
+Step 4: Return: category="Fairshare", customer="Harris Teeter", confidence="HIGH"
 ```
 
 ### Example Trace: `WFMAUG2558031ISEWBB`
@@ -248,6 +246,6 @@ Step 7: Return: category="Fairshare", subcategory="In-Store Execution Whole Body
 | **Number of families** | 7 prefix families covering all 42 invoices |
 | **Number of categories** | 6 major groups (from 55 granular CSV categories) |
 | **Multi-pattern handling** | 11 cells split into separate rules, all pointing to same category |
-| **Fuzzy matching** | 3 FSR prefixes (HAG, HAR, NSG) matched via abbreviation inference |
+| **Abbreviation inference** | 3 FSR prefixes (HAG, HAR, NSG) encoded as exact mappings at design time. |
 | **Confidence** | 42/42 invoices classified as HIGH |
 | **CSV role** | Design-time analysis only — rules hardcoded, CSV not read at runtime |

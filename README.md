@@ -239,10 +239,10 @@ pip install -r requirements.txt
 ```bash
 cd unfi_pipeline
 source venv/bin/activate
-python -m uvicorn src.main:app --reload --port 8000
+python -m uvicorn src.main:app --reload --port 8001
 ```
 
-API docs: `http://localhost:8000/docs`
+API docs: `http://localhost:8001/docs`
 
 ### Test
 
@@ -259,7 +259,7 @@ pytest tests/test_pipeline.py -v
 ### Request
 
 ```bash
-curl -X POST "http://localhost:8000/classify" \
+curl -X POST "http://localhost:8001/classify" \
   -F "files=@files/remittance\\ advice/256199_01222025_WESTACH.pdf" \
   -F "files=@files/noise/financial_document_1.pdf"
 ```
