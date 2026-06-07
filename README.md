@@ -54,7 +54,7 @@ PDF Batch (RA + noise docs)
    CORRUPTED_RA /          invoice_number,          subcategory,
    NOISE                   gross_amount,            region,
                            discount_amount,         customer,
-                           net_amount               confidence
+                           net_amount
 ```
 
 **Pipeline:**
@@ -63,7 +63,7 @@ PDF Batch (RA + noise docs)
 |-------|-------------|--------|
 | **Identify** | Hard filters (company name + invoice prefixes + structural headers) find exactly one valid RA per batch; noise is ignored | `VALID_RA` / `CORRUPTED_RA` / `NOISE` |
 | **Extract** | Strategy chain (pdfplumber tables → pymupdf regex fallback) + date normalization + fused-cell recovery + TOTAL filtering | Structured line items with ISO dates and float amounts |
-| **Classify** | 7-family rule engine matches invoice prefixes against documented categories from the reference CSV | `category`, `subcategory`, `region`, `customer`, `confidence` |
+| **Classify** | 7-family rule engine matches invoice prefixes against documented categories from the reference CSV | `category`, `subcategory`, `region`, `customer` |
 | **Summarize** | Aggregates classified items into totals by category | `total_items`, `total_deductions`, `categories` |
 
 ---
@@ -296,8 +296,7 @@ curl -X POST "http://localhost:8000/classify" \
       "category": "Fairshare",
       "subcategory": "Whole Foods In-Store Execution Whole Body",
       "region": null,
-      "customer": "Whole Foods",
-      "confidence": "HIGH"
+      "customer": "Whole Foods"
     }
   ],
   "summary": {

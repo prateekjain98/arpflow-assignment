@@ -105,11 +105,10 @@ def _extract_wfm_suffix(inv: str) -> str:
 def classify(invoice_number: str) -> ClassificationResult:
     """Classify an invoice number into one of the 7 families.
 
-    Returns ClassificationResult with category, optional subcategory/region/customer,
-    and confidence level.
+    Returns ClassificationResult with category, optional subcategory/region/customer.
     """
     if not invoice_number:
-        return ClassificationResult(category="UNCLASSIFIED", confidence="NONE")
+        return ClassificationResult(category="UNCLASSIFIED")
 
     inv = invoice_number.upper().strip()
 
@@ -133,7 +132,6 @@ def classify(invoice_number: str) -> ClassificationResult:
                 category="Fairshare",
                 subcategory=customer,
                 customer=customer,
-                confidence="HIGH",
             )
 
         # Find longest matching customer code
@@ -143,9 +141,8 @@ def classify(invoice_number: str) -> ClassificationResult:
                     category="Fairshare",
                     subcategory=customer,
                     customer=customer,
-                    confidence="HIGH",
                 )
-        return ClassificationResult(category="Fairshare", confidence="HIGH")
+        return ClassificationResult(category="Fairshare")
 
     # === FAMILY 2: WFM* -> Fairshare ===
     if inv.startswith("WFM"):
@@ -156,37 +153,35 @@ def classify(invoice_number: str) -> ClassificationResult:
                     category="Fairshare",
                     subcategory=program,
                     customer="Whole Foods",
-                    confidence="HIGH",
                 )
         return ClassificationResult(
             category="Fairshare",
             customer="Whole Foods",
-            confidence="HIGH",
         )
 
     # === FAMILY 3: ERTT* / WRTT* -> Food Show ===
     if inv.startswith("ERTT"):
         return ClassificationResult(
-            category="Food Show", region="East", confidence="HIGH"
+            category="Food Show", region="East"
         )
     if inv.startswith("WRTT"):
         return ClassificationResult(
-            category="Food Show", region="West", confidence="HIGH"
+            category="Food Show", region="West"
         )
 
     # === FAMILY 4: ERDC / WRDC -> Advertising Quarterly ===
     # Exception per reference analysis: WRDCE (with trailing E) is Monthly, not Quarterly.
     if inv.startswith("WRDCE"):
         return ClassificationResult(
-            category="Advertising - Monthly", region="West", confidence="HIGH"
+            category="Advertising - Monthly", region="West"
         )
     if inv.startswith("ERDC"):
         return ClassificationResult(
-            category="Advertising - Quarterly", region="East", confidence="HIGH"
+            category="Advertising - Quarterly", region="East"
         )
     if inv.startswith("WRDC"):
         return ClassificationResult(
-            category="Advertising - Quarterly", region="West", confidence="HIGH"
+            category="Advertising - Quarterly", region="West"
         )
 
     # === FAMILY 5: ERNC / WRNC -> Advertising Monthly ===
@@ -195,20 +190,18 @@ def classify(invoice_number: str) -> ClassificationResult:
             category="Advertising - Monthly",
             region="East",
             customer="Natural Connection",
-            confidence="HIGH",
         )
     if inv.startswith("WRNC"):
         return ClassificationResult(
             category="Advertising - Monthly",
             region="West",
             customer="Natural Connection",
-            confidence="HIGH",
         )
 
     # === FAMILY 6: MCB -> Manufacturer Charge Back ===
     if inv.startswith("MCB"):
         return ClassificationResult(
-            category="MCB (Customer Specific)", confidence="HIGH"
+            category="MCB (Customer Specific)"
         )
 
     # === FAMILY 7: YKS -> 3rd Party Billing ===
@@ -216,8 +209,7 @@ def classify(invoice_number: str) -> ClassificationResult:
         return ClassificationResult(
             category="3rd Party Billing",
             customer="Yokes Specialty",
-            confidence="HIGH",
         )
 
     # === UNCLASSIFIED ===
-    return ClassificationResult(category="UNCLASSIFIED", confidence="NONE")
+    return ClassificationResult(category="UNCLASSIFIED")

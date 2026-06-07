@@ -221,7 +221,7 @@ Step 1: Extract alphabetic prefix → "FSRHARFY"
 Step 2: Strip "FY" suffix → "FSRHAR"
 Step 3: Match "FSRHAR" against known FSR customer codes
         "HAR" is not a documented code → no customer match
-Step 4: Return: category="Fairshare", customer=null, confidence="HIGH"
+Step 4: Return: category="Fairshare", customer=null
 ```
 
 The category is certain because `FSR*` is a documented Fairshare prefix family. The customer name is omitted because `HAR` is not directly documented in the reference CSV.
@@ -237,7 +237,7 @@ Step 5: Strip all digits → "ISEWBB"
 Step 6: Match "ISEWBB" against WFM program suffixes (longest first)
         ISEWBB starts with "ISEWB" → ISEWB = "In-Store Execution Whole Body"
 Step 7: Return: category="Fairshare", subcategory="In-Store Execution Whole Body",
-        customer="Whole Foods", confidence="HIGH"
+        customer="Whole Foods"
 ```
 
 ---

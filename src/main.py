@@ -60,7 +60,7 @@ async def classify_endpoint(files: List[UploadFile] = File(...)):
                 subcategory=result.subcategory,
                 region=result.region,
                 customer=result.customer,
-                confidence=result.confidence,
+
             )
         )
 

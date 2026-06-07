@@ -10,7 +10,6 @@ class ClassificationResult(BaseModel):
     subcategory: Optional[str] = None
     region: Optional[str] = None
     customer: Optional[str] = None
-    confidence: str = "HIGH"
 
 
 class LineItem(BaseModel):
@@ -25,7 +24,6 @@ class LineItem(BaseModel):
     subcategory: Optional[str] = None
     region: Optional[str] = None
     customer: Optional[str] = None
-    confidence: str = "HIGH"
 
 
 class ClassificationSummary(BaseModel):
